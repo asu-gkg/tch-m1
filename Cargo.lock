@@ -518,6 +518,7 @@ dependencies = [
 name = "tch-m1"
 version = "0.1.0"
 dependencies = [
+ "rand",
  "tch",
 ]
 
