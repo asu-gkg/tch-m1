@@ -1,7 +1,5 @@
-use std::ops::Add;
-use tch::{Device, Kind, Scalar, Tensor};
-use rand::random;
-
+use tch::{Device, Kind, Tensor};
+use pyo3::prelude::*;
 
 fn synthetic_data(w: Tensor, b: Tensor, num_examples: usize) -> (Tensor, Tensor) {
     println!("w.size: {:?}, w.dim: {}", w.size(), w.size()[0]);
@@ -14,7 +12,7 @@ fn synthetic_data(w: Tensor, b: Tensor, num_examples: usize) -> (Tensor, Tensor)
 
     println!("tmp.normal: {}", tmp.normal_(0.0, 0.1));
     let y = &y.copy() + tmp;
-    (X, y)
+    (X, y.reshape([-1, 1]))
 }
 
 // 预测房价、线性回归
@@ -25,22 +23,17 @@ fn main() {
     let (features, labels) = synthetic_data(true_w, true_b, 10);
 
 
-    // println!("features: {}", features);
-    // println!("labels: {}", labels);
+    println!("features: {}", features);
+    println!("labels: {}", labels);
+
+    Python::with_gil(|py| {
+        let builtins = PyModule::import_bound(py, "builtins").unwrap();
+        let total: i32 = builtins
+            .getattr("sum").unwrap()
+            .call1((vec![1, 2, 3], )).unwrap()
+            .extract().unwrap();
+        assert_eq!(total, 6);
+    });
 
 
-    // let x = Tensor::randn([1, 3],
-    //                       (Kind::Float, Device::Cpu)).set_requires_grad(true);
-    // println!("x: {}", x);
-    //
-    // let z = x.sin();
-    // println!("z: {}", z);
-    //
-    // let w = Tensor::randn([1, 3], (Kind::Float, Device::Cpu));
-    // println!("w: {}", w);
-    // let b: Scalar = Scalar::float(random());
-    // let y: Tensor = w * &x + b;
-    // println!("y: {}", y);
-    // y.sum(Kind::Float).backward();
-    // println!("x.grad: {}", x.grad());
 }
