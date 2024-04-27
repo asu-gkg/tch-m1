@@ -8,5 +8,4 @@ edition = "2021"
 [dependencies]
 tch = "0.15"
 rand = "0.8.5"
-
 pyo3 = { version = "0.21.1", features = ["auto-initialize"] }

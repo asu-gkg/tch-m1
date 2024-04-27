@@ -1,6 +1,4 @@
 use tch::{Device, Kind, Tensor};
-use pyo3::prelude::*;
-
 fn synthetic_data(w: Tensor, b: Tensor, num_examples: usize) -> (Tensor, Tensor) {
     println!("w.size: {:?}, w.dim: {}", w.size(), w.size()[0]);
     let X = Tensor::randn(&[num_examples as i64, w.size()[0]],
@@ -25,15 +23,5 @@ fn main() {
 
     println!("features: {}", features);
     println!("labels: {}", labels);
-
-    Python::with_gil(|py| {
-        let builtins = PyModule::import_bound(py, "builtins").unwrap();
-        let total: i32 = builtins
-            .getattr("sum").unwrap()
-            .call1((vec![1, 2, 3], )).unwrap()
-            .extract().unwrap();
-        assert_eq!(total, 6);
-    });
-
 
 }
